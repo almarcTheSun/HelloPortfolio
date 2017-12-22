@@ -40,10 +40,10 @@ addSphere({x: planets[key].distance, vz: planets[key].velocity, name: key});
 }
 
 //------------------- END YOUR CODE
-	// scene.add(spotlight);
-	// scene.remove(light);
-	// scene.remove(ambientLight);
-	// scene.remove(background);
+	 scene.add(sl);
+	 scene.remove(light);
+	 scene.remove(ambientLight);
+	 scene.remove(background);
 }
 
 /*
@@ -108,10 +108,10 @@ function updateScene(){
 }
 
 function addTrail(pos){
-	// var meshTmp = new THREE.Mesh(geos.trail, mats.trail);
-	// meshTmp.position.set(pos.x, pos.y, pos.z)
-	// scene.add(meshTmp)
-	// trailCount++;
+	var meshTmp = new THREE.Mesh(geos.trail, mats.trail);
+	meshTmp.position.set(pos.x, pos.y, pos.z)
+	scene.add(meshTmp)
+	trailCount++;
 }
 
 
