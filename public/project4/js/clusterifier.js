@@ -88,11 +88,10 @@ var clusterifier = {
 			for(var i = 0; i < centroids.length; i++)
 			{
 				groups.push([]);
-
 			}
 			for(var i = 0; i < nodes.length; i++)
 			{
-				var nearInd = getNearestCentroid(nodes, nodes[i], centroids);
+				nearInd = getNearestCentroid(nodes, nodes[i], centroids);
 				groups[nearInd].push(i);
 				nodes[i].group = nearInd;
 			}
