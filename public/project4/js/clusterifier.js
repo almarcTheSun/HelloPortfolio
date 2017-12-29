@@ -40,7 +40,7 @@ var clusterifier = {
 
 		function iterate(){
 			var eps = 0.5;
-			var groups = groupClusters(nodes, centroids);
+			var groups = groupClusters(nodes, centroids, true);
 			var delta = refineCentroids(groups, nodes, centroids);
 			console.log(delta);
 			callback(groups);
@@ -76,27 +76,46 @@ var clusterifier = {
 			return delta;
 		}
 
-		/*
-		* returns k groups based on n nodes and k centroids
-		* getNearestCentroid(nodes, nodes[i], centroids) returns 
-		* the index of the nearest centroid
-		* nodes[i].group should be the index of the group
-		* groups[i] should be an array of node indices
-		*/
-		function groupClusters(nodes, centroids){
+		function groupClusters(nodes, centroids, equalize) {			
+			var i, j;
 			var groups = [];
-			for(var i = 0; i < centroids.length; i++)
-			{
-				groups.push([]);
+			for(i = 0; i < centroids.length; ++i)	groups[i] = [];
+			for(i = 0; i < nodes.length; ++i){
+				nodes[i].group = getNearestCentroid(nodes, nodes[i], centroids);
+				groups[nodes[i].group].push(i);
 			}
-			for(var i = 0; i < nodes.length; i++)
-			{
-				nearInd = getNearestCentroid(nodes, nodes[i], centroids);
-				groups[nearInd].push(i);
-				nodes[i].group = nearInd;
+			if(equalize){
+				var clusterSizeUpperBound = Math.ceil(nodes.length / centroids.length)
+				var groupsKeys = [];
+				for(i = 0; i < groups.length; ++i)	groupsKeys[i] = i;
+//				groupsKeys.sort(function(b, a){		return groups[a].length - groups[b].length});
+				for(i = 0; i < groupsKeys.length; ++i){
+					var gid = groupsKeys[i];
+					if(groups[gid].length > clusterSizeUpperBound){
+						distributeToOthers(gid);
+					}
+				}
+
+				for(i = 0; i < groups.length; ++i){
+					for(j = 0; j < groups[i].length; ++j){
+						nodes[groups[i][j]].group = i;
+					}
+				}
 			}
-			// TODO
 			return groups;
+
+
+			function distributeToOthers(index){
+				var g = groups[index];
+				g.sort(function(a, b){	return getDist(nodes[a], centroids[index]) - getDist(nodes[b], centroids[index]);});
+				var i, nearest, availableCentroids, nodeIndex;
+				var toRemoveCount = g.length - clusterSizeUpperBound
+				for(i = 0; i < toRemoveCount; ++i){
+					nodeIndex = g.pop();
+					nearest = getNearestCentroid(nodes, nodes[nodeIndex], centroids, clusterSizeUpperBound, groups);
+					groups[nearest].push(nodeIndex);
+				}
+			}
 		}
 
 		function getFurtestNode(nodes, centroids){

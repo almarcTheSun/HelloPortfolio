@@ -16,7 +16,7 @@ function clearScene()
 {
 	if(!graph)	return;
 	var i = graph.vertices.length;
-	while(i--)	scene.remove(graph.vertices[i].mesh);
+	while(i--)	scene.remove(graph.vertices[i].obj);
 	i = graph.links.length;
 	while(i--)	scene.remove(graph.links[i].line);
 }
@@ -31,12 +31,15 @@ function drawGraph()
 	while(i--)
 	{
 		node = graph.vertices[i];
-		node.mesh = addSphere({ x : node.x, y : node.y, z : node.z});
+		node.obj = new THREE.Object3D();
+		node.mesh = addSphere();
+		node.obj.add(node.mesh);
+		node.obj.add(addText(node.name, -8, 8, 0, 0x000000, 4));
+		node.obj.position.set(node.x, node.y, node.z);
+		scene.add(node.obj);
 	}
-	i = graph.links.length;
 	drawEdges();
 }
-
 /*
  * returns mesh of a line stroke
  */
@@ -63,7 +66,8 @@ function drawEdges()
  *	returns mesh of a sphere positioned at x,y,z
  */
 function addSphere(params)
-{		
+{
+	params = params || {};
 	params.x = params.x || 0;
 	params.y = params.y || 0;
 	params.z = params.z || 0;
@@ -71,7 +75,7 @@ function addSphere(params)
 	// mesh.castShadow = true;
 	// mesh.receiveShadow = true;		
 	mesh.position.set(params.x, params.y, params.z);
-	scene.add( mesh );
+	// scene.add( mesh );
 	return mesh;
 }
 
@@ -99,6 +103,7 @@ function setupGraph(g)
 	graph.paused = false
 	graph.links = $.extend([], g.links);
 	graph.vertexCount = g.nodes.length;
+	graph.vertices = $.extend([], g.nodes);
 	graph.linksCount = g.links.length;
 	attachEdgesMap(graph);
 	clearMultipleEdges(graph);
@@ -122,13 +127,16 @@ function resetGraphData()
  */
 function attachVertices(graph)
 {
-	graph.vertices = [];
+	// graph.vertices = [];
 	var i = graph.vertexCount;
 	while(i--)
 	{
-		graph.vertices[i] = {x : 0, y : 0, z : 0, 
-			V: {x : Math.random()*20 - 10, y : Math.random()*20 - 10, z : Math.random()*20 - 10}, 
-			F: {x : 0, y : 0, z : 0}};
+		$.extend(graph.vertices[i], 
+			{
+				x : 0, y : 0, z : 0, 
+				V: {x : Math.random()*20 - 10, y : Math.random()*20 - 10, z : Math.random()*20 - 10}, 
+				F: {x : 0, y : 0, z : 0}
+			});
 	}
 }
 
@@ -411,7 +419,7 @@ function updateVertices()
 	while(i--)
 	{
 		node = graph.vertices[i];
-		node.mesh.position.set(node.x, node.y, node.z)
+		node.obj.position.set(node.x, node.y, node.z)
 	}		
 }
 
@@ -475,7 +483,7 @@ function addText(text, x, y, z, color, size)
 		height: 1,
 		curveSegments: 3,
 		font: "helvetiker",
-		// bevelThickness: 1,
+		// bevelThickness: 0.1,
 		// bevelSize: 2,
 		// bevelEnabled: true,
 		// material: 0,
@@ -490,7 +498,7 @@ function addText(text, x, y, z, color, size)
 	textMesh.position.set(x, y, z);
 	textMesh.matrixAutoUpdate = false;
 	textMesh.updateMatrix();
-	scene.add(textMesh);
+	return textMesh;
 }
 
 function colorGraph(colors){

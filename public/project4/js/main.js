@@ -18,7 +18,7 @@ var ToRad = Math.PI / 180;
 var type=1;
 var infos;
 
-init(generateGraph(100, 150, 2));
+init(generateGraph(10, 20, 2));
 loop();
 
 $("#controls .control-slider input").on("change", function(ev){

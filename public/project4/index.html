@@ -34,10 +34,10 @@
   </div>  
   <div class="graph-controls">
     <div>
-      <p>Number of Vertices</p> <input type="number" id="nodesCount" value="100">
+      <p>Number of Vertices</p> <input type="number" id="nodesCount" value="10">
     </div>
     <div>
-      <p>Number of Edges</p> <input type="number" id="edgesCount" value="150">
+      <p>Number of Edges</p> <input type="number" id="edgesCount" value="20">
     </div>
     <div>
       <p>Number of Clusters</p> <input type="number" id="clustersCount" value="2">
@@ -45,17 +45,27 @@
 
     <input type="button" id="graph-generator" value="Generate Graph"/>
   </div>
-<div class="graph-controls">
+  <div class="graph-controls">
     <div>    
       <p>Clusters count</p>
       <input type="number" id="cluster-size" min="2" max="10" value="4"/>
     </div>
     <input type="button" id="clusterifier" value="Clusterify"/>
-  </div>   -->
+  </div>  
+
+  <div class="graph-controls">
+    <div class="styled-file-input">
+      <input type="file" id="graph-loader"/>
+      <input type="button" id="graph-loader-fake" value="Load Graph"/>
+    </div>
+  </div>
+
 </div>
 
 
 
+
+<script src="libs/csv_reader_dist.js"></script>
 <script src="libs/three.min.js"></script>
 <script src="libs/helvetiker_regular.typeface.js"></script>
 <script src="libs/navigation.js"></script>

@@ -36,7 +36,7 @@
 
 		// geometrys
 		geos['sphere'] = new THREE.BufferGeometry();
-		geos['sphere'].fromGeometry( new THREE.SphereGeometry(4,8,8));
+		geos['sphere'].fromGeometry( new THREE.SphereGeometry(8,8,8));
 		geos['box'] = new THREE.BufferGeometry();
 		geos['box'].fromGeometry( new THREE.BoxGeometry(1,1,1));
 		geos['line'] = new THREE.Geometry();
